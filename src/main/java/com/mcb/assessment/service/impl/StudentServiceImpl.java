@@ -60,10 +60,10 @@ public class StudentServiceImpl implements StudentService {
 	}
 
 	@Override
-	public Set<Student> getByTeacherId (long id) {
+	public int getByTeacherId (long id) {
 		Optional<Teacher> teacher = teacherRepository.findById (id);
 		teacher.orElseThrow (() -> new TeacherNotFound (id));
 		Teacher responseObj = teacher.get ();
-		return responseObj.getGroup ().getStudents ();
+		return responseObj.getGroup ().getStudents ().size ();
 	}
 }

@@ -1,13 +1,15 @@
 package com.mcb.assessment.model.auth;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 //TODO: Use MAP Struct
 public class UserDto {
 
 	private String username;
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private String password;
 	private String email;
 	private String phone;
-	private String name;
 	private String businessTitle;
 
 
@@ -41,14 +43,6 @@ public class UserDto {
 
 	public void setPhone (String phone) {
 		this.phone = phone;
-	}
-
-	public String getName () {
-		return name;
-	}
-
-	public void setName (String name) {
-		this.name = name;
 	}
 
 	public String getBusinessTitle () {

@@ -107,9 +107,9 @@ public class StudentController {
 
 			})
 	@GetMapping("/teachers/{id}")
-	public ResponseEntity<Integer> getStudentsByTeacherId (@PathVariable Long id) {
-		Set<Student> students = studentService.getByTeacherId (id);
-		return ResponseEntity.status (HttpStatus.OK).body (students.size ());
+	public ResponseEntity<Integer> getNoOfStudentsByTeacherId (@PathVariable Long id) {
+		int noOfStudents = studentService.getByTeacherId (id);
+		return ResponseEntity.status (HttpStatus.OK).body (noOfStudents);
 	}
 
 }

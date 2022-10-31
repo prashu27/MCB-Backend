@@ -39,7 +39,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		http.
 				cors ().and ().csrf ().disable ()
 				.authorizeRequests ()
-				.antMatchers ("/api/login", "/api/login/register").permitAll ()
+				.antMatchers ("/api/login", "/api/login/register", "/h2-ui").permitAll ()
 				.antMatchers (HttpMethod.GET, "/swagger-ui/**").permitAll ()
 				.anyRequest ().authenticated ().and ()
 				.exceptionHandling ().authenticationEntryPoint (unauthorizedEntryPoint).and ()
@@ -50,8 +50,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	public void configure (WebSecurity web) throws Exception {
-		web.ignoring ().mvcMatchers ("/swagger-ui.**", "/configuration/**", "/swagger-resources/**", "/v2/api" +
-				"-docs", "/webjars/**");
+		web.ignoring ().mvcMatchers ("/swagger-ui.**", "/h2-ui", "/h2-console/**", "/configuration/**", "/swagger" +
+				"-resources/**", "/v2" + "/api" + "-docs", "/webjars/**");
 	}
 
 	@Bean

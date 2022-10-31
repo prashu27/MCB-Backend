@@ -62,8 +62,10 @@ insert into teachers (teacher_id,group_id,subject_id) values (3,2,3);
 insert into teachers (teacher_id,group_id,subject_id) values (4,2,4);
 insert into teachers (teacher_id,group_id,subject_id) values (5,1,5);
 
---Roles
 INSERT INTO role (id, description, name) VALUES (4, 'Admin role', 'ADMIN');
 INSERT INTO role (id, description, name) VALUES (5, 'User role', 'USER');
+
+insert into users(username,password,email,phone,account_Non_Locked,failed_attempt) values ('prashansa','$2a$10$6QvHtxN7RCpliXAoPrbg4ulDDKaFL3PeV.wLvmE4l.uCVTLRGRu3C','prashansa.shukla@gmail.com','1234567891','1',0);
+insert into user_roles(user_id,role_id) values (1,5);
 
 
