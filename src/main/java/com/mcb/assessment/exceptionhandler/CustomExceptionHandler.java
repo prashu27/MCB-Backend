@@ -46,6 +46,14 @@ public class CustomExceptionHandler {
 
 	}
 
+	@ExceptionHandler(AccountLockedException.class)
+	public final ResponseEntity<ErrorDetails> handleAccountLockedException (AccountLockedException ex) {
+		return new ResponseEntity<> (new ErrorDetails ("Account has been locked", ex.getMessage ()),
+				HttpStatus.NOT_ACCEPTABLE);
+
+	}
+
+
 	@ExceptionHandler(ConstraintViolationException.class)
 	public final ResponseEntity<ErrorDetails> handleConstraintViolation (ConstraintViolationException ex) {
 		return new ResponseEntity<> (new ErrorDetails ("Invalid parameter passed", ex.getMessage ()),

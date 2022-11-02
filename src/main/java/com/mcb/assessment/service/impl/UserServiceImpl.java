@@ -1,5 +1,6 @@
 package com.mcb.assessment.service.impl;
 
+import com.mcb.assessment.exceptionhandler.AccountLockedException;
 import com.mcb.assessment.model.auth.Role;
 import com.mcb.assessment.model.auth.User;
 import com.mcb.assessment.model.auth.UserDto;
@@ -31,8 +32,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 	private BCryptPasswordEncoder bcryptEncoder;
 
 
-	@Transactional
-	public UserDetails loadUserByUsername (String username) throws UsernameNotFoundException {
+	public UserDetails loadUserByUsername (String username) throws UsernameNotFoundException, AccountLockedException {
 		log.info ("Loading user with username {}", username);
 		User user = userDao.findByUsername (username);
 		if (user == null) {
@@ -41,7 +41,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 		}
 		if (!user.isAccountNonLocked ()) {
 			log.error ("User account is loacked : {}", username);
-			unlockWhenTimeExpired (user);
+			throw new AccountLockedException (username);
 		}
 		return new org.springframework.security.core.userdetails.User (user.getUsername (), user.getPassword (),
 				getAuthority (user));
@@ -50,12 +50,13 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 	public void increaseFailedAttempts (String userName) {
 		User user = userDao.findByUsername (userName);
 		log.error ("total failed attempt for user : {}", user.getFailedAttempt ());
-		if (user != null && user.getFailedAttempt () > 3) {
+		if (user != null && user.getFailedAttempt () > 2) {
 			lock (user);
-			throw new BadCredentialsException ("User account is Loacked for 24hrs and Maximum login attempt exceeded");
+			throw new BadCredentialsException ("User account is Locked for 24hrs and Maximum login attempt exceeded");
 		} else {
 			int newFailAttempts = user.getFailedAttempt () + 1;
-			userDao.updateFailedAttempts (newFailAttempts, user.getEmail ());
+			int updatedRow = userDao.updateFailedAttempts (newFailAttempts, user.getUsername ());
+			log.info ("FAILED Attempt no of rows updated " + updatedRow);
 			throw new BadCredentialsException ("Invalid Credential"
 			);
 

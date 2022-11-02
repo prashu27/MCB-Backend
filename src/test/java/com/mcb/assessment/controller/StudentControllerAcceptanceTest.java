@@ -1,9 +1,15 @@
 package com.mcb.assessment.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mcb.assessment.model.auth.AuthToken;
+import com.mcb.assessment.model.auth.LoginUser;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -14,68 +20,80 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 @SpringBootTest
 @TestPropertySource(locations = "classpath:application-test.properties")
 @AutoConfigureMockMvc
-class StudentControllerTest {
+class StudentControllerAcceptanceTest {
 	@Autowired
 	MockMvc mockMvc;
 
 	String baseUrl = "/api/students";
 
+	String accessToken;
+
+	@Autowired
+	private ObjectMapper objectMapper;
+
+	@BeforeEach
+	public void login () throws Exception {
+		LoginUser loginUser = new LoginUser ("prashansa", "password");
+
+		String jsonRequestString = objectMapper.writeValueAsString (loginUser);
+		MockHttpServletResponse response =
+				mockMvc.perform (MockMvcRequestBuilders.post ("/api/login").content (jsonRequestString).contentType (MediaType.APPLICATION_JSON)).andExpect (MockMvcResultMatchers.status ().isOk ()).andReturn ().getResponse ();
+		AuthToken authToken = new ObjectMapper ().readValue (response.getContentAsString (), AuthToken.class);
+
+		this.accessToken = "Bearer " + authToken.getToken ();
+	}
+
+
 	@Test
 	void getStudentById () throws Exception {
-		long id = 1l;
+		long id = 1L;
 		mockMvc.perform (MockMvcRequestBuilders.get (baseUrl + "/" + id).header ("Authorization"
-						, "Bearer eyJhbGciOiJIUzI1NiJ9" +
-								".eyJzdWIiOiJwcmFzaGFuc2EiLCJyb2xlcyI6IlJPTEVfVVNFUiIsImlhdCI6MTY2NzIyNjc2NiwiZXhwIjoxNjY3MjQ0NzY2fQ.fKpZwQO6o1_jVM7K6sAU7YczimiX6yImEKsp1M7q7IU")
-				).
+						, accessToken)).
 				andExpect (MockMvcResultMatchers.status ().isOk ());
 	}
 
 	@Test
 	void failgetStudentById () throws Exception {
-		long id = 100l;
+		long id = 100L;
 		mockMvc.perform (MockMvcRequestBuilders.get (baseUrl + "/" + id).header ("Authorization"
-						, "Bearer eyJhbGciOiJIUzI1NiJ9" +
-								".eyJzdWIiOiJwcmFzaGFuc2EiLCJyb2xlcyI6IlJPTEVfVVNFUiIsImlhdCI6MTY2NzIyNjc2NiwiZXhwIjoxNjY3MjQ0NzY2fQ.fKpZwQO6o1_jVM7K6sAU7YczimiX6yImEKsp1M7q7IU")
-				).
+						, accessToken)).
 				andExpect (MockMvcResultMatchers.status ().isNotFound ());
 	}
 
+	@Test
+	void unauthorizedgetStudentById () throws Exception {
+		long id = 100L;
+		mockMvc.perform (MockMvcRequestBuilders.get (baseUrl + "/" + id)).
+				andExpect (MockMvcResultMatchers.status ().is4xxClientError ());
+	}
 
 	@Test
 	void getMarksByStudentId () throws Exception {
-		long id = 1l;
+		long id = 1L;
 		mockMvc.perform (MockMvcRequestBuilders.get (baseUrl + "/" + id + "/marks").header ("Authorization"
-						, "Bearer eyJhbGciOiJIUzI1NiJ9" +
-								".eyJzdWIiOiJwcmFzaGFuc2EiLCJyb2xlcyI6IlJPTEVfVVNFUiIsImlhdCI6MTY2NzIyNjc2NiwiZXhwIjoxNjY3MjQ0NzY2fQ.fKpZwQO6o1_jVM7K6sAU7YczimiX6yImEKsp1M7q7IU")).
-
+						, accessToken)).
 				andExpect (MockMvcResultMatchers.status ().isOk ()).andDo (print ()).andReturn ();
 	}
 
 	@Test
 	void GetMarksByStudentId () throws Exception {
-		long id = 1l;
+		long id = 1L;
 		mockMvc.perform (MockMvcRequestBuilders.get (baseUrl + "/" + id + "/marks").header ("Authorization"
-						, "Bearer eyJhbGciOiJIUzI1NiJ9" +
-								".eyJzdWIiOiJwcmFzaGFuc2EiLCJyb2xlcyI6IlJPTEVfVVNFUiIsImlhdCI6MTY2NzIyNjc2NiwiZXhwIjoxNjY3MjQ0NzY2fQ.fKpZwQO6o1_jVM7K6sAU7YczimiX6yImEKsp1M7q7IU")).
-				andExpect (MockMvcResultMatchers.status ().isOk ()).andDo (print ()).andReturn ();
+				, accessToken)).andExpect (MockMvcResultMatchers.status ().isOk ()).andDo (print ()).andReturn ();
 	}
 
 	@Test
 	void failGetMarksByStudentId () throws Exception {
-		long id = 100l;
+		long id = 100L;
 		mockMvc.perform (MockMvcRequestBuilders.get (baseUrl + "/" + id + "/marks").header ("Authorization"
-						, "Bearer eyJhbGciOiJIUzI1NiJ9" +
-								".eyJzdWIiOiJwcmFzaGFuc2EiLCJyb2xlcyI6IlJPTEVfVVNFUiIsImlhdCI6MTY2NzIyNjc2NiwiZXhwIjoxNjY3MjQ0NzY2fQ.fKpZwQO6o1_jVM7K6sAU7YczimiX6yImEKsp1M7q7IU")).
-				andExpect (MockMvcResultMatchers.status ().isNotFound ()).andDo (print ()).andReturn ();
+				, accessToken)).andExpect (MockMvcResultMatchers.status ().isNotFound ()).andDo (print ()).andReturn ();
 	}
 
 	@Test
 	void getListOfMarksByStudentId () throws Exception {
-		long id = 1l;
+		long id = 1L;
 		mockMvc.perform (MockMvcRequestBuilders.get (baseUrl + "/" + id + "/subjects/marks").header ("Authorization"
-						, "Bearer eyJhbGciOiJIUzI1NiJ9" +
-								".eyJzdWIiOiJwcmFzaGFuc2EiLCJyb2xlcyI6IlJPTEVfVVNFUiIsImlhdCI6MTY2NzIyNjc2NiwiZXhwIjoxNjY3MjQ0NzY2fQ.fKpZwQO6o1_jVM7K6sAU7YczimiX6yImEKsp1M7q7IU")).andExpect (
-						MockMvcResultMatchers.status ().isOk ()).
+						, accessToken)).andExpect (MockMvcResultMatchers.status ().isOk ()).
 				andExpect (MockMvcResultMatchers.jsonPath ("$.[1].mark").value ("10.0")
 				).andDo (print ());
 
@@ -83,11 +101,9 @@ class StudentControllerTest {
 
 	@Test
 	void getStudentsByTeacherId () throws Exception {
-		long id = 1l;
+		long id = 1L;
 		mockMvc.perform (MockMvcRequestBuilders.get (baseUrl + "/teachers/" + id).header ("Authorization"
-				, "Bearer eyJhbGciOiJIUzI1NiJ9" +
-						".eyJzdWIiOiJwcmFzaGFuc2EiLCJyb2xlcyI6IlJPTEVfVVNFUiIsImlhdCI6MTY2NzIyNjc2NiwiZXhwIjoxNjY3MjQ0NzY2fQ.fKpZwQO6o1_jVM7K6sAU7YczimiX6yImEKsp1M7q7IU")).andExpect (
-				MockMvcResultMatchers.status ().isOk ()).andDo (print ());
+				, accessToken)).andExpect (MockMvcResultMatchers.status ().isOk ()).andDo (print ());
 
 
 	}

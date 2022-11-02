@@ -16,6 +16,6 @@ public interface UserDao extends CrudRepository<User, Long> {
 	@Query("UPDATE User u SET u.failedAttempt = ?1 WHERE u.username = ?2")
 	@Modifying
 	@Transactional
-	void updateFailedAttempts (int failAttempts, String username);
+	Integer updateFailedAttempts (int failAttempts, String username);
 
 }

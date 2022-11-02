@@ -1,6 +1,8 @@
 package com.mcb.assessment.model.auth;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -11,6 +13,8 @@ import java.util.Set;
 
 @Entity
 @Table(name = "users")
+@AllArgsConstructor
+@NoArgsConstructor
 public class User {
 
 	@Id
@@ -48,6 +52,7 @@ public class User {
 			inverseJoinColumns = {
 					@JoinColumn(name = "ROLE_ID")})
 	private Set<Role> roles;
+
 
 	public boolean isAccountNonLocked () {
 		return accountNonLocked;

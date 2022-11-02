@@ -1,11 +1,10 @@
-package com.mcb.assessment.service;
+package com.mcb.assessment.service.impl;
 
 import com.mcb.assessment.exceptionhandler.TeacherNotFound;
 import com.mcb.assessment.model.*;
 import com.mcb.assessment.repository.MarkRepository;
 import com.mcb.assessment.repository.StudentRepository;
 import com.mcb.assessment.repository.TeacherRepository;
-import com.mcb.assessment.service.impl.StudentServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -42,7 +41,7 @@ class StudentServiceTest {
 	void addStudent () {
 		Set<Student> students = new HashSet<> ();
 		Group g = new Group (1, "A", students);
-		Student s = new Student (1l, "prashansa", "shukla", g);
+		Student s = new Student (1L, "prashansa", "shukla", g);
 		Mockito.when (studentRepository.save (any ())).thenReturn (s);
 		Student actual = studentService.addStudent (s);
 		assert (actual.getFirstName ().equals (s.getFirstName ()));
@@ -53,9 +52,9 @@ class StudentServiceTest {
 	void getByStudentId () {
 		Set<Student> students = new HashSet<> ();
 		Group g = new Group (1, "A", students);
-		Student s = new Student (1l, "prashansa", "shukla", g);
-		Mockito.when (studentRepository.findById (1l)).thenReturn (Optional.of (s));
-		Student actual = studentService.getByStudentId (1l);
+		Student s = new Student (1L, "prashansa", "shukla", g);
+		Mockito.when (studentRepository.findById (1L)).thenReturn (Optional.of (s));
+		Student actual = studentService.getByStudentId (1L);
 		assert (actual.getFirstName ().equals (s.getFirstName ()));
 	}
 
@@ -64,16 +63,16 @@ class StudentServiceTest {
 	void getListOfMarksByStudentId () {
 		Set<Mark> marks = new HashSet<> ();
 		marks.add (new Mark ());
-		Mockito.when (markRepository.findByStudentStudentId (1l)).thenReturn (marks);
-		Set<Mark> actual = studentService.getListOfMarksByStudentId (1l);
+		Mockito.when (markRepository.findByStudentStudentId (1L)).thenReturn (marks);
+		Set<Mark> actual = studentService.getListOfMarksByStudentId (1L);
 		assert (actual.equals (marks));
 	}
 
 
 	@Test
 	void failGetNoOfStudentsByTeacherId () {
-		Mockito.when (studentRepository.findById (1l)).thenReturn (Optional.ofNullable (null));
-		assertThrows (TeacherNotFound.class, () -> studentService.getByTeacherId (1l));
+		Mockito.when (studentRepository.findById (1L)).thenReturn (Optional.ofNullable (null));
+		assertThrows (TeacherNotFound.class, () -> studentService.getByTeacherId (1L));
 
 	}
 
@@ -82,11 +81,11 @@ class StudentServiceTest {
 		Set<Student> students = new HashSet<> ();
 		Subject subject = new Subject ();
 		Group group = new Group (1, "A", students);
-		Student s = new Student (1l, "prashansa", "shukla", group);
+		Student s = new Student (1L, "prashansa", "shukla", group);
 		students.add (s);
 		Teacher teacherObj = new Teacher (1, subject, group);
-		Mockito.when (teacherRepository.findById (1l)).thenReturn (Optional.of (teacherObj));
-		assertEquals (1l, studentService.getByTeacherId (1l));
+		Mockito.when (teacherRepository.findById (1L)).thenReturn (Optional.of (teacherObj));
+		assertEquals (1L, studentService.getByTeacherId (1L));
 
 	}
 }

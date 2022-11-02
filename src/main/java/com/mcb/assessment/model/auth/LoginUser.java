@@ -1,10 +1,12 @@
 package com.mcb.assessment.model.auth;
 
+import lombok.AllArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+@AllArgsConstructor
 public class LoginUser {
 
 	@NotBlank(message = "Name cannot be blank")

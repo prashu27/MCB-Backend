@@ -1,8 +1,13 @@
 package com.mcb.assessment.model.auth;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
 public class Role {
 
 	@Id
