@@ -3,6 +3,7 @@ package com.mcb.assessment.controller;
 import com.mcb.assessment.model.Mark;
 import com.mcb.assessment.model.Student;
 import com.mcb.assessment.service.StudentService;
+import io.swagger.annotations.ApiParam;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -35,7 +36,8 @@ public class StudentController {
 
 			})
 	@GetMapping("/{id}")
-	public ResponseEntity<Student> getStudentById (@PathVariable Long id) {
+	public ResponseEntity<Student> getStudentById (@PathVariable("id") @ApiParam(name = "id", value = "id",
+			example = "1") Long id) {
 		Student student = studentService.getByStudentId (id);
 		return ResponseEntity.status (HttpStatus.OK).body (student);
 	}
@@ -53,7 +55,8 @@ public class StudentController {
 
 			})
 	@GetMapping("/{id}/marks")
-	public ResponseEntity<BigDecimal> getMarksByStudentId (@PathVariable Long id) {
+	public ResponseEntity<BigDecimal> getMarksByStudentId (@PathVariable("id") @ApiParam(name = "id", value = "id",
+			example = "1") Long id) {
 		return new ResponseEntity<> (studentService.getMarksByStudentId (id), HttpStatus.OK);
 	}
 
@@ -71,7 +74,9 @@ public class StudentController {
 
 			})
 	@GetMapping("/{id}/subjects/marks")
-	public ResponseEntity<Set<Mark>> getListOfMarksByStudentId (@PathVariable Long id) {
+	public ResponseEntity<Set<Mark>> getListOfMarksByStudentId (@PathVariable("id") @ApiParam(name = "id", value =
+			"id",
+			example = "1") Long id) {
 		Set<Mark> marks = studentService.getListOfMarksByStudentId (id);
 		return new ResponseEntity<> (marks, HttpStatus.OK);
 	}
@@ -107,7 +112,8 @@ public class StudentController {
 
 			})
 	@GetMapping("/teachers/{id}")
-	public ResponseEntity<Integer> getNoOfStudentsByTeacherId (@PathVariable Long id) {
+	public ResponseEntity<Integer> getNoOfStudentsByTeacherId (@PathVariable("id") @ApiParam(name = "id", value = "id",
+			example = "1") Long id) {
 		int noOfStudents = studentService.getByTeacherId (id);
 		return ResponseEntity.status (HttpStatus.OK).body (noOfStudents);
 	}

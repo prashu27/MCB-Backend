@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 @RestController
 @RequestMapping("api/groups")
@@ -14,12 +15,14 @@ public class GroupController {
 	GroupService groupService;
 
 	@PostMapping("/")
+	@ApiIgnore
 	public ResponseEntity<Group> insertGroup (@RequestBody Group group) {
 
 		Group groupObj = groupService.addGroup (group);
 		return ResponseEntity.status (HttpStatus.CREATED).body (groupObj);
 	}
 
+	@ApiIgnore
 	@GetMapping("/{id}")
 	public ResponseEntity<Group> getGroupById (@PathVariable long id) {
 		Group group = groupService.getGroupById (id);

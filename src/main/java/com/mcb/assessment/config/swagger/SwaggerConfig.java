@@ -2,6 +2,7 @@ package com.mcb.assessment.config.swagger;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiKey;
@@ -25,7 +26,7 @@ public class SwaggerConfig {
 
 		return new Docket (DocumentationType.SWAGGER_2)
 				.select ()
-				.apis (RequestHandlerSelectors.any ())
+				.apis (RequestHandlerSelectors.withClassAnnotation (RestController.class))
 				.paths (PathSelectors.any ())
 				.build ().securityContexts (Arrays.asList (securityContext ()))
 				.securitySchemes (Arrays.asList (apiKey ()));
